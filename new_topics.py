@@ -27,12 +27,14 @@ def main():
         r = requests.get(TOPIC_FILE_URL)
         content = r.content.decode('ascii')
         topics = content.split('\n')
+        print(topics)
     except:
         logging.error("Error getting doc list from url " +TOPIC_FILE_URL)
         exit(0)
 
+    topic_file_list = []
     topics_to_add = []
-
+    topics_to_delete = []
     existing_topics = []
 
     try:
@@ -56,6 +58,10 @@ def main():
         topic = topic_data[0]
         filtered_url = topic_data[1]
         category = topic_data[2]
+        
+        # For delete logic 
+        topic_file_list.append(topic)
+
         if topic in existing_topics:
             logging.info("Already found " + topic)
         else:
@@ -65,13 +71,27 @@ def main():
                 "category": category
             })
 
+    #Implement delete logic
+    logging.info("Deleting topics that are not in doc list")
+    for existing_topic in existing_topics:
+        if existing_topic not in topic_file_list:
+            topics_to_delete.append(existing_topic)
+
     if len(topics_to_add) > 0:
         logging.info("Adding the following entries into db:")
         for topic in topics_to_add:
             logging.info(topic['topic'])
         x = collection.insert_many(topics_to_add)
     else:
-        logging.info("Nothing to update")
+        logging.info("Nothing to add")
+
+    if len(topics_to_delete) > 0:
+        logging.info("Deleting the following entries from db:")
+        for topic in topics_to_delete:
+            logging.info(topic)
+        x = collection.delete_many({"topic": topics_to_delete})
+    else:
+        logging.info("Nothing to delete")
     
     logging.info("All processes complete")
 
