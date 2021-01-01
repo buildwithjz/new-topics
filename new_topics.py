@@ -27,7 +27,6 @@ def main():
         r = requests.get(TOPIC_FILE_URL)
         content = r.content.decode('ascii')
         topics = content.split('\n')
-        print(topics)
     except:
         logging.error("Error getting doc list from url " +TOPIC_FILE_URL)
         exit(0)
@@ -54,24 +53,26 @@ def main():
     existing_topics = get_existing_topics(collection)
     
     for topic_row in topics:
-        topic_data = topic_row.split(',')
-        topic = topic_data[0]
-        filtered_url = topic_data[1]
-        category = topic_data[2]
+        try:
+            topic_data = topic_row.split(',')
+            topic = topic_data[0]
+            filtered_url = topic_data[1]
+            category = topic_data[2]
         
-        # For delete logic 
-        topic_file_list.append(topic)
+            # For delete logic 
+            topic_file_list.append(topic)
 
-        if topic in existing_topics:
-            logging.info("Already found " + topic)
-        else:
-            topics_to_add.append({
-                "topic": topic,
-                "filtered-url": filtered_url,
-                "category": category
-            })
+            if topic in existing_topics:
+                logging.info("Already found " + topic)
+            else:
+                topics_to_add.append({
+                    "topic": topic,
+                    "filtered-url": filtered_url,
+                    "category": category
+                })
+        except:
+            logging.warning("Failed to process row " + topic_row)
 
-    #Implement delete logic
     logging.info("Deleting topics that are not in doc list")
     for existing_topic in existing_topics:
         if existing_topic not in topic_file_list:
@@ -89,7 +90,7 @@ def main():
         logging.info("Deleting the following entries from db:")
         for topic in topics_to_delete:
             logging.info(topic)
-        x = collection.delete_many({"topic": topics_to_delete})
+        x = collection.delete_many({"topic": {"$in": topics_to_delete}})
     else:
         logging.info("Nothing to delete")
     
