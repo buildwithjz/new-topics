@@ -23,7 +23,7 @@ def main():
     TOPIC_FILE_URL = os.environ['TOPIC_FILE_URL']
     #TOPIC_FILE_URL = 'https://raw.githubusercontent.com/JohnZProd/saga-poc/master/doc_list.txt'
     try:
-        logging.error("Getting doc list from " + TOPIC_FILE_URL)
+        logging.info("Getting doc list from " + TOPIC_FILE_URL)
         r = requests.get(TOPIC_FILE_URL)
         content = r.content.decode('ascii')
         topics = content.split('\n')
@@ -46,8 +46,9 @@ def main():
         client = pymongo.MongoClient("mongodb://{}:{}@{}/{}".format(DB_USER, DB_PASSWORD, DB_ENDPOINT, DB_NAME))
         db = client.saga
         collection = db.topics
-    except:
+    except Exception as e:
         logging.error("Could not connect to db")
+        logging.error(e)
         exit(0)
 
     existing_topics = get_existing_topics(collection)
