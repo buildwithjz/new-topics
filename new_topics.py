@@ -3,6 +3,7 @@ import requests
 import pymongo
 import logging
 import time
+import sys
 
 def get_existing_topics(collection):
     existing_topics = []
@@ -29,7 +30,7 @@ def main():
         topics = content.split('\n')
     except:
         logging.error("Error getting doc list from url " +TOPIC_FILE_URL)
-        exit(0)
+        sys.exit(1)
 
     topic_file_list = []
     topics_to_add = []
@@ -49,7 +50,7 @@ def main():
     except Exception as e:
         logging.error("Could not connect to db")
         logging.error(e)
-        exit(0)
+        exit(1)
 
     existing_topics = get_existing_topics(collection)
     
@@ -95,7 +96,8 @@ def main():
     else:
         logging.info("Nothing to delete")
     
-    logging.info("All processes complete")
+    logging.info("All processes complete... Exiting with code 0")
+    sys.exit(1)
 
 if __name__ == "__main__":
     main()
