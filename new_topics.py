@@ -97,7 +97,7 @@ def main():
         logging.info("Nothing to delete")
     
     logging.info("All processes complete... Exiting with code 0")
-    sys.exit(1)
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
