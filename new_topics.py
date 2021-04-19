@@ -22,7 +22,7 @@ def main():
     logging.info("Starting new topic insert for saga")
 
     TOPIC_FILE_URL = os.environ['TOPIC_FILE_URL']
-    #TOPIC_FILE_URL = 'https://raw.githubusercontent.com/JohnZProd/saga-poc/master/doc_list.txt'
+    #TOPIC_FILE_URL = 'https://raw.githubusercontent.com/buildwithjz/saga-poc/master/doc_list.txt'
     try:
         logging.info("Getting doc list from " + TOPIC_FILE_URL)
         r = requests.get(TOPIC_FILE_URL)
