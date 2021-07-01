@@ -94,7 +94,7 @@ def main():
             logging.info(topic)
         x = collection.delete_many({"topic": {"$in": topics_to_delete}})
     else:
-        logging.info("Nothing to delete")
+        logging.info("No topics to delete")
     
     logging.info("All processes complete... Exiting with code 0")
     sys.exit(0)
